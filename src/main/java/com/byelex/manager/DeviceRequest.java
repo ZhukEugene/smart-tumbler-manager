@@ -1,6 +1,5 @@
 package com.byelex.manager;
 
-
 import java.time.LocalDate;
 
 public class DeviceRequest {
