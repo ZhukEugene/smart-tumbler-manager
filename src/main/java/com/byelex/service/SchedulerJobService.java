@@ -2,7 +2,6 @@ package com.byelex.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.byelex.job.TumblerJob;
 import org.quartz.*;
@@ -41,20 +40,16 @@ public class SchedulerJobService {
 
     public void deleteJobsByDateAndDeviceId(LocalDate date, String deviceId) {
         System.out.println("deletion of " + date + " " + deviceId);
-
-        List<SchedulerJobInfo> jobsInfo = schedulerRepository.findAllByJobDateAndJobDeviceId(date, deviceId);
-        if (jobsInfo.isEmpty())
-            return;
-        for (SchedulerJobInfo info : jobsInfo
-        ) {
-            try {
-                scheduler.deleteJob(new JobKey(String.valueOf(info.getJobId()), String.valueOf(info.getJobId())));
-                schedulerRepository.delete(info);
+        try {
+            List<SchedulerJobInfo> jobsInfo = schedulerRepository.findAllByJobDateAndJobDeviceId(date, deviceId);
+            if (jobsInfo != null) {
+                for (SchedulerJobInfo info : jobsInfo) {
+                    scheduler.deleteJob(new JobKey(String.valueOf(info.getJobId()), String.valueOf(info.getJobId())));
+                    schedulerRepository.delete(info);
+                }
             }
-            catch (SchedulerException e)
-            {
-                e.printStackTrace();
-            }
+        } catch (SchedulerException e) {
+            System.out.println(e.getMessage());
         }
     }
 

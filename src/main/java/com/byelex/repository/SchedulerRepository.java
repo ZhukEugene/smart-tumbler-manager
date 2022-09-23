@@ -12,5 +12,6 @@ import java.util.List;
 public interface SchedulerRepository extends JpaRepository<SchedulerJobInfo, Long> {
 
 	List<SchedulerJobInfo> findAllByJobDateAndJobDeviceId(LocalDate jobDate, String jobDeviceId);
+	SchedulerJobInfo findByJobDateAndJobDeviceId(LocalDate jobDate, String jobDeviceId);
 
 }

@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/tumblerjobsdb
+    url: jdbc:postgresql://localhost:5432/tumblerjobsdb
     username: adminuser
     password: postgres
   jpa:
@@ -13,6 +13,9 @@ spring:
           lob:
             non_contextual_creation: true
   quartz:
+    jobStore:
+      driverDelegateClass:
+        driverDelegateClass
     job-store-type: jdbc
     jdbc:
       initialize-schema: always
