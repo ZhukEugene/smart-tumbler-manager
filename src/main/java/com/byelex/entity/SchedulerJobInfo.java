@@ -20,9 +20,14 @@ import java.time.LocalTime;
 @Table(name = "scheduler_job_info")
 public class SchedulerJobInfo {
 
+    private static int ID = 0;
+
+    public SchedulerJobInfo() {
+        this.jobId = ID++;
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String jobId;
+    private int jobId;
     private LocalDate jobDate;
     private LocalTime jobTime;
     private String jobDeviceId;

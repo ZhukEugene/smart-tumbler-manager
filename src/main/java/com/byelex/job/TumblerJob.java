@@ -10,9 +10,9 @@ public class TumblerJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 
-        System.out.println("\nsend " + context.getJobDetail().getJobDataMap().get("action") + " signal to "
-                + context.getJobDetail().getJobDataMap().get("deviceID") +
-                "\nTimestamp: " + LocalDateTime.now());
-
+//        System.out.println("\nsend " + context.getJobDetail().getJobDataMap().get("action") + " signal to "
+//                + context.getJobDetail().getJobDataMap().get("deviceID") +
+//                "\nTimestamp: " + LocalDateTime.now());
+        System.out.println("\nTimestamp: " + LocalDateTime.now());
     }
 }

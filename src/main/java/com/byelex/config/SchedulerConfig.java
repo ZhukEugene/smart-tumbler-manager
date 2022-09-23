@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 @Configuration
@@ -36,6 +37,7 @@ public class SchedulerConfig {
 		factory.setDataSource(dataSource);
 		factory.setQuartzProperties(properties);
 		factory.setJobFactory(jobFactory);
+		factory.setConfigLocation(new ClassPathResource("quartz.properties"));
 		return factory;
 	}
 }

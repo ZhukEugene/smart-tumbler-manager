@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  smart-tumbler:
+    image: java-docker
+    ports:
+      - "8080:8080"
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/tumblerjobsdb
+    depends_on:
+      - postgres
+    build: .
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: "tumblerjobsdb"
+      POSTGRES_USER: "adminuser"
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - .:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"

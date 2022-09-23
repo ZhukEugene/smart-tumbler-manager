@@ -14,23 +14,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class JobScheduleCreator {
 
-    private static Long LAST_JOB_ID = 0L;
-    private String getNewJobId(){
-        return (LAST_JOB_ID++).toString();
-    }
 
-    public JobDetail createJob(Class<? extends QuartzJobBean> jobClass, ApplicationContext context) {
-        String id = getNewJobId();
+
+    public JobDetail createJob(Class<? extends QuartzJobBean> jobClass, ApplicationContext context, String group, String name) {
+        System.out.println("got job id");
+
         JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
         factoryBean.setJobClass(jobClass);
         factoryBean.setApplicationContext(context);
-        factoryBean.setGroup(id);
-        factoryBean.setName(id);
+        factoryBean.setGroup(group);
+        factoryBean.setName(name);
+
+        System.out.println("factory Bean OK");
+
         // set job data map
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(id, jobClass.getName());
+        jobDataMap.put(group+"."+name, jobClass.getName());
+
+        System.out.println("Data map ok");
+
         factoryBean.setJobDataMap(jobDataMap);
         factoryBean.afterPropertiesSet();
+        System.out.println("properties set");
+
         return factoryBean.getObject();
     }
 
@@ -40,6 +46,7 @@ public class JobScheduleCreator {
         factoryBean.setName(triggerName);
         factoryBean.setStartTime(startTime);
         factoryBean.setRepeatCount(1);
+        factoryBean.setRepeatInterval(1);
         factoryBean.afterPropertiesSet();
         return factoryBean.getObject();
     }

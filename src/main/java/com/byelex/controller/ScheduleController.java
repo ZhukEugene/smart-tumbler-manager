@@ -4,10 +4,12 @@ import com.byelex.entity.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 import com.byelex.service.SchedulerJobService;
 import org.quartz.*;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,9 +34,14 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping("/get_schedule")
+    public String getSchedule() {
+        return Arrays.toString(schedulerJobService.getAllJobList().toArray());
+    }
+
     public void scheduleTumblerJob(String deviceID, LocalDate date, LocalTime time, Action.ActionType action) throws SchedulerException {
         if (date.isAfter(LocalDate.now()) || (time.isAfter(LocalTime.now()) && date.isEqual(LocalDate.now()))) {
-
+            System.out.println(LocalDate.now() + " " + LocalTime.now());
             SchedulerJobInfo info = new SchedulerJobInfo();
             info.setJobDeviceId(deviceID);
             info.setJobDate(date);

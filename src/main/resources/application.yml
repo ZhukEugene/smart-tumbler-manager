@@ -1,0 +1,21 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/tumblerjobsdb
+    username: adminuser
+    password: postgres
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
