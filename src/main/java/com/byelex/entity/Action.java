@@ -11,8 +11,8 @@ import lombok.ToString;
 @Setter
 public class Action {
     public enum ActionType {
-        turnOn,
-        turnOff
+        turn_on,
+        turn_off
     }
 
     private LocalTime timeOn;

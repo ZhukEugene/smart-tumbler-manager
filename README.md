@@ -1,10 +1,54 @@
 # smart-tumbler-manager
 
-Расписание Реализовано с использованием Quartz
+## endpoints:
+GET http://localhost:8080/get_schedule <br />
+GET http://localhost:8080/clear_schedule <br />
+POST http://localhost:8080/post_schedule
 
-При послуплении POST запроса с расписанием, старое расписание стирается и в память записывается новое расписание.  
-Вместе с этим удаляются Job`s и создаются новые в соответствии с новым расписанием.
-
-Классы DeviceRequest и Action созданы для декодирования JSON, получаемого в теле POST запроса.
-
-Информация о методе и ID устройства передаются в Job через экземпляр JobDataMap.
+### post_schedule body JSON Examples:
+```json
+[
+    {
+        "deviceID": "1",
+        "date": "2022-09-25",
+        "actions": [
+            {
+                "timeOn": "23:47:00",
+                "timeOff": "21:45:10"
+            },
+            {
+                "timeOn": "21:49:00",
+                "timeOff": "23:51:15"
+            }
+        ]
+    },
+    {
+        "deviceID": "2",
+        "date": "2022-09-25",
+        "actions": [
+            {
+                "timeOn": "22:56:30",
+                "timeOff": "21:55:30"
+            },
+            {
+                "timeOn": "22:53:30",
+                "timeOff": "22:53:35"
+            }
+        ]
+    }
+]
+```
+```json
+[
+    {
+        "deviceID": "1",
+        "date": "2022-09-25",
+        "actions": [
+            {
+                "timeOn": "22:52:00",
+                "timeOff": "22:51:10"
+            }
+        ]
+    }
+]
+```

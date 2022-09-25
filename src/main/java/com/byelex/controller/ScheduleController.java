@@ -7,7 +7,6 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 import com.byelex.service.SchedulerJobService;
-import org.quartz.*;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,14 +21,31 @@ public class ScheduleController {
 
     private final SchedulerJobService schedulerJobService;
 
-    @PostMapping("/send_schedule")
-    public void updateSchedule(@RequestBody DeviceRequest[] request) throws SchedulerException {
+    @PostMapping("/post_schedule")
+    public void updateSchedule(@RequestBody DeviceRequest[] request) {
 
-        for (DeviceRequest unit : request) {
-            schedulerJobService.deleteJobsByDateAndDeviceId(unit.getDate(), unit.getDeviceID());
-            for (Action action : unit.getActions()) {
-                scheduleTumblerJob(unit.getDeviceID(), unit.getDate(), action.getTimeOff(), Action.ActionType.turnOff);
-                scheduleTumblerJob(unit.getDeviceID(), unit.getDate(), action.getTimeOn(), Action.ActionType.turnOn);
+        for (DeviceRequest deviceRequest : request) {
+            schedulerJobService.deleteJobsByDateAndDeviceId(deviceRequest.getDate(), deviceRequest.getDeviceID());
+
+            for (Action action : deviceRequest.getActions()) {
+
+                if (deviceRequest.getDate().isAfter(LocalDate.now()) || (action.getTimeOff().isAfter(LocalTime.now()) && deviceRequest.getDate().isEqual(LocalDate.now()))) {
+                    schedulerJobService.scheduleNewJob(deviceRequest.getDeviceID(), deviceRequest.getDate(), action.getTimeOff(), Action.ActionType.turn_off);
+
+                    System.out.println("scheduled to " + Action.ActionType.turn_off + " " + deviceRequest.getDeviceID() + " device at " + deviceRequest.getDate() + " " + action.getTimeOff());
+                } else {
+                    System.out.println("not scheduled to " + Action.ActionType.turn_off + " " + deviceRequest.getDeviceID() + " device at " + deviceRequest.getDate() + " " + action.getTimeOff() +
+                            " because of wrong date and time value");
+                }
+
+                if (deviceRequest.getDate().isAfter(LocalDate.now()) || (action.getTimeOn().isAfter(LocalTime.now()) && deviceRequest.getDate().isEqual(LocalDate.now()))) {
+                    schedulerJobService.scheduleNewJob(deviceRequest.getDeviceID(), deviceRequest.getDate(), action.getTimeOn(), Action.ActionType.turn_on);
+
+                    System.out.println("scheduled to " + Action.ActionType.turn_on + " " + deviceRequest.getDeviceID() + " device at " + deviceRequest.getDate() + " " + action.getTimeOn());
+                } else {
+                    System.out.println("not scheduled to " + Action.ActionType.turn_on + " " + deviceRequest.getDeviceID() + " device at " + deviceRequest.getDate() + " " + action.getTimeOn() +
+                            " because of wrong date and time value");
+                }
             }
         }
     }
@@ -38,22 +54,9 @@ public class ScheduleController {
     public String getSchedule() {
         return Arrays.toString(schedulerJobService.getAllJobList().toArray());
     }
-
-    public void scheduleTumblerJob(String deviceID, LocalDate date, LocalTime time, Action.ActionType action) throws SchedulerException {
-        if (date.isAfter(LocalDate.now()) || (time.isAfter(LocalTime.now()) && date.isEqual(LocalDate.now()))) {
-            System.out.println(LocalDate.now() + " " + LocalTime.now());
-            SchedulerJobInfo info = new SchedulerJobInfo();
-            info.setJobDeviceId(deviceID);
-            info.setJobDate(date);
-            info.setJobTime(time);
-            info.setJobActionType(action);
-            schedulerJobService.scheduleNewJob(info);
-
-            System.out.println("scheduled to " + action.toString() + " " + deviceID + " device at " + date + " " + time);
-        } else {
-            System.out.println("not scheduled to " + action.toString() + " " + deviceID + " device at " + date + " " + time +
-                    " because of wrong date and time value");
-        }
+    @GetMapping("/clear_schedule")
+    public void clearSchedule() {
+        schedulerJobService.deleteAllJobs();
     }
 
 }

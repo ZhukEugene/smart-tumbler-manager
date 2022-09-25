@@ -5,19 +5,20 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - POSTGRES_URL=jdbc:postgresql://postgres:5432/tumblerjobsdb
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/tumbler_jobs_db
     depends_on:
       - postgres
     build: .
+    links:
+      - "postgres:localhost"
   postgres:
     image: postgres
     environment:
-      POSTGRES_DB: "tumblerjobsdb"
+      POSTGRES_DB: "tumbler_jobs_db"
       POSTGRES_USER: "adminuser"
       POSTGRES_PASSWORD: "postgres"
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
       - .:/var/lib/postgresql/data
-      - ./docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
     ports:
       - "5432:5432"
